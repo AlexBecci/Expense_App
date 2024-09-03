@@ -3,7 +3,8 @@ import { UserService } from "../services/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "../domain/user.entity";
 import * as bcrypt from 'bcrypt';
-import { create_user_dto } from "../dtos/create_user_dto";
+import { create_user_dto } from "../domain/dtos/user/create_user_dto";
+import { update_user_dto } from "../domain/dtos/user/update/update_user_dto";
 /* import { crear_usuario_dto } from "../dtos/crear_usuario_dto"; */
 
 @Injectable()
@@ -27,13 +28,13 @@ export class AuthService {
         }
     }
 
-      async login(usuario: User) {
-          console.log('entrando al login')
-          const payload = { usuario: usuario.usuario, sub: usuario.usuario }
-          return {
-              access_token: this.jwtService.sign(payload)
-          }
-      }
+    async login(usuario: User) {
+        console.log('entrando al login')
+        const payload = { usuario: usuario.usuario, sub: usuario.usuario }
+        return {
+            access_token: this.jwtService.sign(payload)
+        }
+    }
 
     async register(user: create_user_dto): Promise<any> {
         const user_found = await this.userService.get_user_by_name(user.usuario)
@@ -49,6 +50,11 @@ export class AuthService {
             nombre: user.nombre
         })
         return new_user
+    }
+
+    async update(id: number, user_dto: update_user_dto): Promise<User> {
+        const body_update = this.userService.update_user(id, user_dto)
+        return body_update
     }
 
     private async comparePassword(plainTextPassword: string, hashedPassword: string): Promise<boolean> {

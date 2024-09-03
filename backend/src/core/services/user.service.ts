@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { User } from "../domain/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { create_user_dto } from "../dtos/create_user_dto";
-
+import { create_user_dto } from "../domain/dtos/user/create_user_dto";
+import { update_user_dto } from "../domain/dtos/user/update/update_user_dto";
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
     constructor(
@@ -40,6 +41,27 @@ export class UserService {
         new_user.fecha_creacion = new Date();
         return this.userRepository.save(new_user)
     }
+
+    async update_user(id: number, user_dto: update_user_dto): Promise<User> {
+        const user = await this.userRepository.findOneBy({ id });
+
+        if (!user) {
+            throw new NotFoundException(`User With Id ${id} not Found`)
+        }
+
+        if (user_dto.password) {
+            //encriptar la nueva contraseña
+            user_dto.password = await bcrypt.hash(user_dto.password, 10);
+        }
+        //merge the update values into the existing user entity
+        Object.assign(user, user_dto)
+        //save the update user
+
+        return this.userRepository.save(user)
+
+    }
+
+
     /*     async crear_usuario(user: crear_usuario_dto) {
             const usuarioExistente = await this.usuarioRepository.findOne({
                 where: {

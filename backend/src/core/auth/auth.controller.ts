@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, Session, UnauthorizedException } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Session, UnauthorizedException } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { create_user_dto } from "../dtos/create_user_dto";
-import { login_dto } from "../dtos/login_dto";
+import { create_user_dto } from "../domain/dtos/user/create_user_dto";
+import { login_dto } from "../domain/dtos/auth/login_dto";
+import { update_user_dto } from "../domain/dtos/user/update/update_user_dto";
+import { User } from "../domain/user.entity";
 /* import { crear_usuario_dto } from "../dtos/crear_usuario_dto";
 import { logueo_dto } from "../dtos/logueo_dto"; */
 
@@ -16,6 +18,10 @@ export class AuthController {
         return user
     }
 
+    @Put('update/:id')
+    async update(@Param('id') id: number, @Body() user_dto: update_user_dto): Promise<User> {
+        return this.authService.update(id, user_dto)
+    }
 
     @Post('login')
     async login(@Body() logueo: login_dto, @Session() session: Record<string, any>) {

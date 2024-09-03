@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, UpdateDateColumn } from "typeorm"
 import { Expense } from "./expense.entity";
 import { Category } from "./category.entity";
 
@@ -15,12 +15,12 @@ export class User {
   password: string;
 
   @Column({ default: true })
-  rol_: boolean
+  state_: boolean
 
   @CreateDateColumn({ type: 'datetime' })
   fecha_creacion: Date;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @UpdateDateColumn({ type: 'datetime' })
   fecha_actualizacion: Date;
 
   @Column()
