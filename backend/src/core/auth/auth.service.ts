@@ -38,7 +38,6 @@ export class AuthService {
 
     async register(user: create_user_dto): Promise<any> {
         const user_found = await this.userService.get_user_by_name(user.usuario)
-        console.log(user_found)
         if (user_found !== null) {
             throw new ConflictException("Usuario ya existente")
         }

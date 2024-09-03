@@ -10,9 +10,11 @@ export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
     ) { }
+    
     async get_users(): Promise<User[]> {
         return this.userRepository.find()
     }
+    
     /* DTO */
     async get_user(id: number): Promise<any> {
         const user = await this.userRepository.findOne({
